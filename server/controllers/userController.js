@@ -36,7 +36,6 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
-    console.log(user);
     if (!user) {
         // deny access
         return res.status(400).json({

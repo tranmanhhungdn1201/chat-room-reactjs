@@ -6,6 +6,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 //Bring in the routes
 const userRoute = require("./routes/user");
+const chatroomRoute = require("./routes/chatroom");
+app.use("/api/chatroom", chatroomRoute);
 app.use("/api/users", userRoute);
 //Setup Error Handlers
 const errorHandlers = require('./handlers/errorHandlers');
