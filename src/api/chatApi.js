@@ -1,14 +1,13 @@
-import { setToken } from 'utils/auth';
 const { default: axiosClient } = require("./axiosClient");
 
-const authApi = {
-    login: (data) => {
-        const url = 'users/login';
+const chatApi = {
+    createRoom: (data) => {
+        const url = 'chatroom';
         return axiosClient.post(url, data).then((res) => {
             if(res.success) {
                 const token = res.token
 				// sets token as an included header for all subsequent api requests
-				setToken(token);
+				axiosClient.setToken(token);
 			}
             return res;
         }).catch((err) => {
@@ -16,20 +15,15 @@ const authApi = {
             return err;
         });
     },
-    register: (data) => {
-        const url = 'users/register';
-        return axiosClient.post(url, data).then((res) => {
-            if(res.success) {
-                const token = res.token
-				// sets token as an included header for all subsequent api requests
-				setToken(token);
-			}
+    getAllRooms: (params) => {
+        const url = 'chatroom';
+        return axiosClient.get(url, { params }).then((res) => {
             return res;
         }).catch((err) => {
             console.log(err);
             return err;
         });
-    }
+    },
 }
 
-export default authApi;
+export default chatApi;

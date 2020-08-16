@@ -5,10 +5,12 @@ import React from 'react';
 import { Switch } from 'react-router-dom';
 import PrivateRoute from './route/PrivateRoute';
 import PublicRoute from './route/PublicRoute';
+import MainPage from 'features/Chat/pages/MainPage';
 
 const router = (
     <Switch>
-        {/* <PrivateRoute exact path="/" component={Home} /> */}
+        <PrivateRoute exact path="/" component={MainPage} />
+        <PrivateRoute exact path="/:id" component={MainPage} />
         <PublicRoute restricted={true} exact path="/login" component={Login} />
         <PublicRoute restricted={false} exact path="/register" component={Register} />
         <PublicRoute component={NotFound} />
