@@ -1,0 +1,36 @@
+.register {
+    align-items: center;
+    justify-content: center;
+
+    &__form {
+        padding: 20px;
+        border: 1px solid #ddd;
+        box-shadow: -2px 1px 5px 2px rgba(0,0,0,0.3);
+        max-width: 350px;
+        min-height: 400px;
+        img {
+            width: 100%;
+        }
+    }
+
+    &__image {
+        float: right;
+        margin-right: 100px;
+        max-width: 500px;
+        img {
+            width: 100%;
+        }
+    }
+
+    &__formAction {
+        text-align: center;
+    }
+}
+
+.register .register-form {
+    max-width: 300px;
+}
+
+.register .register-form-button {
+    width: 100%;
+}

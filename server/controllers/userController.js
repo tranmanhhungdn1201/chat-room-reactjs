@@ -6,16 +6,15 @@ const saltRounds = 10;
 exports.register = async (req, res) => {
     const { name, email } = req.body;
     if (req.body.password.length < 6) {
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Password must be at least 6 characters long.",
         })
     }
 
     const isExistEmail = await User.findOne({email: email});
-    console.log(isExistEmail);
     if (isExistEmail) {
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Email is exist.",
         })
@@ -38,14 +37,14 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email: email });
     if (!user) {
         // deny access
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Email or password is wrong."
         });
     }
     if(!bcrypt.compareSync(password, user.password)) {
         // Passwords don't match
-        return res.status(400).json({
+        return res.json({
             success: false,
             message: "Email or password is wrong."
         });
