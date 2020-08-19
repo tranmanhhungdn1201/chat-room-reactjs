@@ -29,6 +29,7 @@ const server = app.listen(port, () => {
 
 const jwt = require("jsonwebtoken");
 const User = require("./models/User");
+const Message = require("./models/Message");
 const io = require('socket.io')(server);
 const { SECRET_KEY } = process.env;
 
@@ -47,8 +48,36 @@ io.use(async (socket, next) => {
 })
 
 io.on('connection', (socket) => {
-    console.log('Connected: ' + socket.userId);
+    console.log("connected: " + socket.id);
     socket.on('disconnect', () => {
         console.log(socket.id + ": disconnected");
+    });
+
+    socket.on("joinRoom", ({ chatroomId }) => {
+        socket.join(chatroomId);
+        console.log("A user joined chatroom: " + chatroomId);
+    });
+
+    socket.on("leaveRoom", ({ chatroomId }) => {
+        socket.leave(chatroomId);
+        console.log("A user left chatroom: " + chatroomId);
+    });
+
+    socket.on("chatroomMessage", async ({ chatroomId, message }) => {
+        if (message.trim().length > 0) {
+            console.log("MESSAGE: " + message);
+          const user = await User.findOne({ _id: socket.userId });
+          const newMessage = new Message({
+            chatroom: chatroomId,
+            user: socket.userId,
+            message,
+          });
+          io.to(chatroomId).emit("newMessage", {
+            message,
+            name: user.name,
+            userId: socket.userId,
+          });
+          await newMessage.save();
+        }
     });
 })

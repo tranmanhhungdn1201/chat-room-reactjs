@@ -1,0 +1,11 @@
+.main {
+    background-color: rgb(240, 242, 245);
+    
+    &__containerChat {
+        display: flex;
+    }
+
+    &__chatBox {
+        flex: 1;
+    }
+}
