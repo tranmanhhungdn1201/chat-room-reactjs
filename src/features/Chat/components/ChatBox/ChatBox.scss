@@ -18,8 +18,9 @@
     }
 
     &__content {
-        min-height: 300px;
+        height: 300px;
         padding: 5px 10px;
+        overflow-y: auto;
     }
 
     &__message {
@@ -41,6 +42,14 @@
         margin-bottom: 2px;
     }
 
+    &__outgoing {
+        justify-content: flex-end;
+    }
+
+    &__admin {
+        justify-content: center;
+    }
+
     &__send {
         margin-right: 15px;
         font-size: 14px;
@@ -53,10 +62,21 @@
     border-radius: 14px;
     padding: 5px 10px;
     margin-left: 8px;
+    color: #646464;
 
     p {
         margin: 0;
     }
+}
+
+.msg__admin {
+    font-size: 13px;
+}
+
+.chatBox__outgoing .msg__content {
+    color: #fff;
+    background-color: #05728f;
+    margin-right: 5px;
 }
 
 .msg__name {

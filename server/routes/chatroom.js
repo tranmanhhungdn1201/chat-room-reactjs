@@ -8,4 +8,7 @@ router.post("/", auth.verifyToken, catchErrors(chatroomController.createChatroom
 
 router.get("/", auth.verifyToken, catchErrors(chatroomController.getAllChatrooms));
 
+router.get("/check/:chatroomId", auth.verifyToken, catchErrors(chatroomController.checkRoomExist));
+
+
 module.exports = router;

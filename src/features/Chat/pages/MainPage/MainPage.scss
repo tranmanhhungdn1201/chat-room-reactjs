@@ -6,6 +6,11 @@
     }
 
     &__chatBox {
+        flex: 2;
+    }
+    
+    &__usersOnline {
+        margin-top: 50px;
         flex: 1;
     }
 }

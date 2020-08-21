@@ -20,6 +20,7 @@ export const setupSocket = () => {
       newSocket.on("connect", () => {
         toast.success("Socket Connected!");
       });
+      console.log(newSocket);
       return newSocket;
     }
 };

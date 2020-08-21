@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import chatApi from 'api/chatApi';
 import { toast } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
 
 ModalCreateRoom.propTypes = {
     visible: PropTypes.bool,
@@ -17,6 +18,7 @@ ModalCreateRoom.defautProps = {
 function ModalCreateRoom({ visible, toggle }) {
     const [form] = Form.useForm();
     const [ confirmLoading, setConfirmLoading ] = useState(false);
+    const history = useHistory();
 
     const onCreateRoom = (values) => {
         setConfirmLoading(true);
@@ -26,6 +28,7 @@ function ModalCreateRoom({ visible, toggle }) {
                 toast.success(res.message);
                 setConfirmLoading(false);
                 toggle();
+                history.push(`/chatroom/${res.chatroom._id}`);
             } else {
                 setConfirmLoading(false);
                 toast.error(res.message);

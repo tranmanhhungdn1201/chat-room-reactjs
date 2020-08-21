@@ -30,8 +30,10 @@ const server = app.listen(port, () => {
 const jwt = require("jsonwebtoken");
 const User = require("./models/User");
 const Message = require("./models/Message");
+const Chatroom = require("./models/Chatroom");
 const io = require('socket.io')(server);
 const { SECRET_KEY } = process.env;
+const {addUser, removeUser, getUsersInRoom} = require('./socket/user');
 
 io.use(async (socket, next) => {
     try {
@@ -53,19 +55,29 @@ io.on('connection', (socket) => {
         console.log(socket.id + ": disconnected");
     });
 
-    socket.on("joinRoom", ({ chatroomId }) => {
-        socket.join(chatroomId);
+    socket.on("joinRoom", async ({ chatroomId, user, room}) => {
+        const chatroom = Chatroom.find({id: chatroomId});
+        if (chatroom) {
+            addUser({id: socket.id, user, roomId: chatroomId});
+            socket.join(chatroomId);
+            socket.emit('newMessage', { name: 'admin', message: `${user.name}, welcome to room ${room.name}.`});
+            socket.broadcast.to(chatroomId).emit('newMessage', { name: 'admin', message: `${user.name} has joined!` });
+
+            io.to(chatroomId).emit('roomData', { room: chatroomId, users: getUsersInRoom(chatroomId) });
+        }
         console.log("A user joined chatroom: " + chatroomId);
     });
 
-    socket.on("leaveRoom", ({ chatroomId }) => {
+    socket.on("leaveRoom", ({ chatroomId, user}) => {
+        removeUser(socket.id);
+        socket.broadcast.to(chatroomId).emit('newMessage', { name: 'admin', message: `${user.name} has leaved!` });
         socket.leave(chatroomId);
+        io.to(chatroomId).emit('roomData', { room: chatroomId, users: getUsersInRoom(chatroomId) });
         console.log("A user left chatroom: " + chatroomId);
     });
 
     socket.on("chatroomMessage", async ({ chatroomId, message }) => {
         if (message.trim().length > 0) {
-            console.log("MESSAGE: " + message);
           const user = await User.findOne({ _id: socket.userId });
           const newMessage = new Message({
             chatroom: chatroomId,

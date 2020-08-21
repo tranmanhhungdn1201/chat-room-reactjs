@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-    TeamOutlined,
-    UserOutlined
+  CommentOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import './SideBar.scss';
 import chatApi from 'api/chatApi';
+import { Link, useHistory } from 'react-router-dom';
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 
 function SiderDemo() {
   const [ collapsed , setCollapsed ] = useState(false);
   const [ rooms , setRooms ] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     const rooms = async () => {
@@ -28,23 +28,20 @@ function SiderDemo() {
     setCollapsed(collapsed);
   };
 
+  const handleJoinRoom = (roomId) => {
+    history.push(`/chatroom/${roomId}`);
+  }
+
   return (
     <Sider className="sideBar" collapsible collapsed={collapsed} onCollapse={onCollapse}>
         <div className="sideBar__logo" />
         <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1" icon={<TeamOutlined />}>
-                Rooms
-            </Menu.Item>
             {
                 rooms.length ? rooms.map(room => (
-                    <SubMenu key={room._id} icon={<UserOutlined />} title={room.name}>
-                        <Menu.Item key="3">Tom</Menu.Item>
-                        <Menu.Item key="4">Bill</Menu.Item>
-                        <Menu.Item key="5">Alex</Menu.Item>
-                    </SubMenu>
+                    <Menu.Item key={room._id} icon={<CommentOutlined/>} onClick={() => handleJoinRoom(room._id)}>{room.name}</Menu.Item>
                 ))
                 :
-                <SubMenu title="Nothing" />
+                <Menu.Item>Nothing</Menu.Item>
             }
         </Menu>
     </Sider>
