@@ -3,6 +3,7 @@ import { logOut } from 'utils/auth';
 import ModalCreateRoom from 'features/Chat/components/ModalCreateRoom';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { getCurrentUser } from 'utils/auth';
 import './RightMenu.scss';
 
 const SubMenu = Menu.SubMenu;
@@ -10,6 +11,7 @@ const MenuItemGroup = Menu.ItemGroup;
 
 function RightMenu({isHorizontal}) {
   const [ showModal, setShowModal ] = useState(false);
+  const auth = getCurrentUser();
   const history = useHistory();
   const toggle = () => {
     setShowModal(!showModal);
@@ -29,7 +31,7 @@ function RightMenu({isHorizontal}) {
         <Menu.Item>
           <a href="#" onClick={toggle}>Create room</a>
         </Menu.Item>
-        <SubMenu title={<span>anhboy2002,</span>}>
+          <SubMenu title={<span>{auth.name},</span>}>
           <MenuItemGroup>
             <Menu.Item key="setting:1">Profile</Menu.Item>
             <Menu.Item key="setting:2" onClick={onLogout}>Logout</Menu.Item>
