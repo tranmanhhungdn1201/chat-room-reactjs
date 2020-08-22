@@ -14,7 +14,7 @@ function ListOnline({users}) {
     return (
         <>
             {
-                users.length && (
+                users.length !== 0 && (
                 <div className="listOnline">
                     <h3>Online</h3>
                     <ul>

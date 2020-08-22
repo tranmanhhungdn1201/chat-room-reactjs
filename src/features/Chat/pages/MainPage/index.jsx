@@ -1,13 +1,13 @@
 import chatApi from 'api/chatApi';
 import Navbar from 'components/Navbar';
 import ChatBox from 'features/Chat/components/ChatBox';
+import ListOnline from 'features/Chat/components/ListOnline';
 import SideBar from 'features/Chat/components/SideBar';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { getCurrentUser } from 'utils/auth';
 import { setupSocket } from 'utils/socket';
 import './MainPage.scss';
-import ListOnline from 'features/Chat/components/ListOnline';
 
 let socket;
 function MainPage({ match }) {
@@ -15,20 +15,32 @@ function MainPage({ match }) {
     const chatroomId = match?.params?.id;
     const [users, setUsers] = useState([]);
     const [room, setRoom] = useState({});
-    const [reload, setReload] = useState(false);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [chatroomExist, setChatroomExist] = useState(true);
 
+    useEffect(() => {
+        socket = setupSocket();
+        console.log('zo');
+        console.log(socket);
+        if (socket) {
+            socket.on("newMessage", (message) => {
+                setMessages(messages => [ ...messages, message ]);
+
+            });
+
+            socket.on("roomData", ({ users }) => {
+                setUsers(users);
+            });
+        }
+    }, []);
+
     useEffect( () => {
         if(!chatroomId) return;
         const setup = async () => {
-            setMessages([]);
-            setReload(false);
             const room = await chatApi.checkRoomExist(chatroomId);
+            setMessages([]);
             if (room.success) {
-                socket = setupSocket();
-                setReload(true);
                 setChatroomExist(true);
                 setRoom(room.chatroom);
             } else {
@@ -58,7 +70,6 @@ function MainPage({ match }) {
     }, [chatroomExist, chatroomId]);
 
     const sendMessage = () => {
-        console.log('sendMessage')
         if (socket && chatroomId) {
             socket.emit("chatroomMessage", {
                 chatroomId,
@@ -67,18 +78,6 @@ function MainPage({ match }) {
             setMessage('');
         }
     };
-
-    useEffect(() => {
-        if (socket) {
-            socket.on("newMessage", (message) => {
-                setMessages([...messages, message]);
-            });
-
-            socket.on("roomData", ({ users }) => {
-                setUsers(users);
-            });
-        }
-    }, [messages, reload]);
 
     return (
         <div className="main">
